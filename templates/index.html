@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connection Test</title>
+</head>
+<body>
+
+    <h1>TO chexk connection</h1>
+    
+    <button onclick="testConnection()">Call Python</button>
+
+    <p id="reply-box" style="color: blue; font-weight: bold;">Waiting for connection</p>
+
+    <script>
+        //async function allows the code to wait for the server
+        async function testConnection() {
+            
+            //fetch api is the command that actually sends the request to the python scripts
+            const response = await fetch('/api/test');
+
+            //Convert the data packet from text to a JS Object
+            const data = await response.json();
+
+            
+            console.log(data);
+
+            //Put the message into the HTML paragraph
+            document.getElementById('reply-box').innerText = data.message;
+        }
+    </script>
+
+</body>
+</html>
