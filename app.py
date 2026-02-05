@@ -30,7 +30,7 @@ def plant_bomb():
         print(f"Bomb has been planted. Current count is: {len(messages)}")
         return jsonify({'status': 'saved'})
     
-    return jsonify({'status': 'error'}), 400
+    return jsonify({'status': 'error'}), 
 
 if __name__ == '__main__':
     app.run(debug=True)

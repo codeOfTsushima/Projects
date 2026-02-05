@@ -2,32 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Connection Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Bomb</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <h1>TO chexk connection</h1>
-    
-    <button onclick="testConnection()">Call Python</button>
+    <div class="container">
+        <h1 Message Bomb</h1>
 
-    <p id="reply-box" style="color: blue; font-weight: bold;">Waiting for connection</p>
+        <div id="bomb-alert-achu" class="bomb-alert-achu" style="display: none;">
+            <h2>SECRET FOUND </h2>
+            <p id="secret-text" class="secret-text">...</p>
+            <small>This Message has been deleted diddy</small>
+        </div>
+
+        <p id="status-text" class="status">Checking for messages</p>
+
+        <hr>
+
+        <div class="input-section">
+            <h3>Leave a message for the next victim diddy</h3>
+            <img src="{{ url_for('static', filename='diddy.png') }}" alt="Oil up" class="diddy"> <br> <br>
+            <marquee scrollamount="20" direction="right">Kachowwww <img class="car" src="{{ url_for('static', filename='car.png') }}"></marquee>
+            <input type="text" id="secret-input" placeholder="Say something nigga">
+            <button onclick="plantBomb()">Plant Bomb</button>
+        </div>
+    </div>
 
     <script>
-        //async function allows the code to wait for the server
-        async function testConnection() {
-            
-            //fetch api is the command that actually sends the request to the python scripts
-            const response = await fetch('/api/test');
+        //First function to fetch the message/checks for messages
+        async function checkMessage() {
+            try {
+                const response = await fetch('/api/get_message');
+                const data = await response.json();
 
-            //Convert the data packet from text to a JS Object
-            const data = await response.json();
-
-            
-            console.log(data);
-
-            //Put the message into the HTML paragraph
-            document.getElementById('reply-box').innerText = data.message;
+                if (data.found === true) {
+                    
+                    document.getElementById('bomb-alert-achu').style.display = 'block';
+                    // Insert the secret text
+                    document.getElementById('secret-text').innerText = data.text;
+                    // Update status
+                    document.getElementById('status-text').innerText = "Status: BOOM Bomboclat"; 
+                } else {
+                    document.getElementById('status-text').innerText = "Status: No messages found. Safe to approach";
+                }
+            } catch (error) {
+                console.error("Error connecting to server:", error);
+            }
         }
+
+        //Plant the bomb
+        async function plantBomb() {
+            const inputBox = document.getElementById('secret-input');
+            const text = inputBox.value;
+
+            if (text === "") return; 
+            // Don't send empty messages. Please!
+
+            await fetch('/api/plant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ secret_message: text })
+            });
+
+            
+            inputBox.value = "";
+            alert("Bomb Planted. The next person is doooomed.");
+        }
+
+        checkMessage();
     </script>
 
 </body>
