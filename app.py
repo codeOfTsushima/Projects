@@ -16,7 +16,7 @@ def get_message():
     if len(messages) > 0:
         #POP the first message basically Get it and delete it
         secret = messages.pop(0)
-        return jsonify({'found': True, 'text': secret, 'remaining': len(messages)})
+        return jsonify({'found': True, 'text': secret})
     else:
         return jsonify({'found': False})
 
@@ -27,10 +27,9 @@ def plant_bomb():
     
     if new_secret:
         messages.append(new_secret)
-        print(f"Bomb has been planted. Current count is: {len(messages)}")
         return jsonify({'status': 'saved'})
     
-    return jsonify({'status': 'error'}), 
+    return jsonify({'status': 'error'}), 400 
 
 if __name__ == '__main__':
     app.run(debug=True)
