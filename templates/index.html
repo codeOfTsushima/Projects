@@ -11,10 +11,11 @@
     <div class="container">
         <h1 Message Bomb</h1>
 
-        <div id="bomb-alert-achu" class="bomb-alert-achu" style="display: none;">
+        <div id="bomb-alert" class="bomb-alert" style="display: none;">
             <h2>SECRET FOUND </h2>
             <p id="secret-text" class="secret-text">...</p>
-            <small>This Message has been deleted diddy</small>
+            <div id="timer-bar"></div>
+            <small>Message will self-destruct in 10s</small>
         </div>
 
         <p id="status-text" class="status">Checking for messages</p>
@@ -22,28 +23,38 @@
         <hr>
 
         <div class="input-section">
-            <h3>Leave a message for the next victim diddy</h3>
+            <h3>Leave a message for the next victim</h3>
             <img src="{{ url_for('static', filename='diddy.png') }}" alt="Oil up" class="diddy"> <br> <br>
-            <marquee scrollamount="20" direction="right">Kachowwww <img class="car" src="{{ url_for('static', filename='car.png') }}"></marquee>
-            <input type="text" id="secret-input" placeholder="Say something nigga">
+            <input type="text" id="secret-input" placeholder="Say your worst">
             <button onclick="plantBomb()">Plant Bomb</button>
         </div>
     </div>
 
     <script>
+        const POLL_RATE = 2000; //checks every 5 sec
+        const DESTRUCT_TIME = 10000; //visible for 10sec
         //First function to fetch the message/checks for messages
         async function checkMessage() {
+                
             try {
                 const response = await fetch('/api/get_message');
                 const data = await response.json();
 
                 if (data.found === true) {
                     
-                    document.getElementById('bomb-alert-achu').style.display = 'block';
+                    document.getElementById('bomb-alert').style.display = 'block';
                     // Insert the secret text
                     document.getElementById('secret-text').innerText = data.text;
                     // Update status
                     document.getElementById('status-text').innerText = "Status: BOOM Bomboclat"; 
+                
+                    setTimeout(function() {
+                        document.getElementById('bomb-alert').style.display = 'none';
+                        document.getElementById('status-text').innerText = "Message deleted";
+                        alert("This message has been deleted forever");
+                    }, DESTRUCT_TIME);
+                
+                
                 } else {
                     document.getElementById('status-text').innerText = "Status: No messages found. Safe to approach";
                 }
@@ -64,15 +75,16 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ secret_message: text })
-            });
-
-            
+            });            
             inputBox.value = "";
             alert("Bomb Planted. The next person is doooomed.");
+            
         }
 
         checkMessage();
+        setInterval(checkMessage, POLL_RATE);
+    
+        
     </script>
-
 </body>
 </html>
