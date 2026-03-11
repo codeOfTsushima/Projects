@@ -30,61 +30,64 @@
         </div>
     </div>
 
-    <script>
-        const POLL_RATE = 2000; //checks every 5 sec
-        const DESTRUCT_TIME = 10000; //visible for 10sec
-        //First function to fetch the message/checks for messages
+<script>
+        const POLL_RATE = 3000;      // Check every 2 seconds
+        const DESTRUCT_TIME = 10000; // Visible for 10 seconds
+
+        let myID = localStorage.getItem('my_hacker_id');
+        if (!myID) {
+            myID = Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('my_hacker_id', myID);
+        }
+
         async function checkMessage() {
-                
             try {
-                const response = await fetch('/api/get_message');
+                const response = await fetch('/api/get_message/' + myID);
                 const data = await response.json();
 
                 if (data.found === true) {
-                    
                     document.getElementById('bomb-alert').style.display = 'block';
-                    // Insert the secret text
                     document.getElementById('secret-text').innerText = data.text;
-                    // Update status
-                    document.getElementById('status-text').innerText = "Status: BOOM Bomboclat"; 
-                
+                    document.getElementById('status-text').innerText = "Status: BOOM! Message Intercepted"; 
+
                     setTimeout(function() {
                         document.getElementById('bomb-alert').style.display = 'none';
-                        document.getElementById('status-text').innerText = "Message deleted";
-                        alert("This message has been deleted forever");
+                        document.getElementById('status-text').innerText = "Status: Message Deleted.";
+                        alert("This message has been deleted forever.");
                     }, DESTRUCT_TIME);
                 
-                
                 } else {
-                    document.getElementById('status-text').innerText = "Status: No messages found. Safe to approach";
+                    if (data.status === 'waiting') {
+                        document.getElementById('status-text').innerText = "Status: Your bomb is active. Waiting for victim...";
+                    } else {
+                        document.getElementById('status-text').innerText = "Status: No messages found...";
+                    }
                 }
             } catch (error) {
                 console.error("Error connecting to server:", error);
             }
         }
 
-        //Plant the bomb
         async function plantBomb() {
             const inputBox = document.getElementById('secret-input');
             const text = inputBox.value;
 
             if (text === "") return; 
-            // Don't send empty messages. Please!
 
             await fetch('/api/plant', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ secret_message: text })
-            });            
+                body: JSON.stringify({ secret_message: text, sender_id: myID })
+            });
+
             inputBox.value = "";
-            alert("Bomb Planted. The next person is doooomed.");
-            
+            alert("Bomb Planted! You will NOT see this message. Waiting for the next victim...");
         }
 
+        // Start loops
         checkMessage();
         setInterval(checkMessage, POLL_RATE);
-    
-        
+
     </script>
 </body>
 </html>
