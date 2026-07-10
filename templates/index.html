@@ -4,47 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message Bomb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <div class="container">
-        <h1 Message Bomb</h1>
+    <div class="app-card">
+        
+        <div class="header">
+            <h1>Message Bomb</h1>
+            <p id="status-text" class="status">Checking for messages...</p>
+        </div>
 
         <div id="bomb-alert" class="bomb-alert" style="display: none;">
-            <h2>SECRET FOUND </h2>
+            <div class="radar-scan"></div>
+            <h2>⚠ SECRET FOUND ⚠</h2>
             <p id="secret-text" class="secret-text">...</p>
             <div id="timer-bar"></div>
             <small>Message will self-destruct in 10s</small>
         </div>
 
-        <p id="status-text" class="status">Checking for messages</p>
-
-        <hr>
-
-        <div class="input-section">
-            <h3>Leave a message for the next victim</h3>
-            <img src="{{ url_for('static', filename='diddy.png') }}" alt="Oil up" class="diddy"> <br> <br>
-            <input type="text" id="secret-input" placeholder="Say your worst">
-            <button onclick="plantBomb()">Plant Bomb</button>
+        <div class="interactive-section">
+            
+            <div class="cyber-logo">
+                <div class="logo-msg">
+                    <span style="--i:1">M</span><span style="--i:2">e</span><span style="--i:3">s</span><span style="--i:4">s</span><span style="--i:5">a</span><span style="--i:6">g</span><span style="--i:7">e</span>
+                </div>
+                <div class="logo-bomb">
+                    <span style="--i:8">B</span><span style="--i:9">O</span><span style="--i:10">M</span><span style="--i:11">B</span>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="secret-input" placeholder="Say your worst" autocomplete="off">
+                <button onclick="plantBomb()">Plant Bomb</button>
+            </div>
         </div>
-        <div class="author-card">
-    <h3 class="neon-text-small">Developer Information</h3>
-    <p class="author-name">Parthip M Potti</p>
-    
-    <div class="social-links">
-        <a href="parthip.mp303@gmail.com" class="neon-link"> <u>Email</u></a>
 
-        <a href="https://github.com/codeOfTsushima" target="_blank" class="neon-link"> <u>GitHub</u></a>
-        <a href="www.linkedin.com/in/parthip-m-potti-ls25012701" target="_blank" class="neon-link"><u>LinkedIn</u></a>
-        <a href="https://instagram.com/codeOfTsushima" target="_blank" class="neon-link"><u>Instagram</u></a>
-    </div>
-</div>
+        <hr class="divider">
+
+        <div class="developer-footer">
+            <h4 class="neon-text-small">Developer Information</h4>
+            <p class="dev-name">Parthip M Potti</p>
+            <div class="social-links">
+                <a href="mailto:parthip.mp303@gmail.com" class="neon-link">Email</a>
+                <span class="dot">•</span>
+                <a href="https://github.com/codeOfTsushima" target="_blank" class="neon-link">GitHub</a>
+                <span class="dot">•</span>
+                <a href="https://www.linkedin.com/in/parthip-m-potti-ls25012701" target="_blank" class="neon-link">LinkedIn</a>
+                <span class="dot">•</span>
+                <a href="https://instagram.com/codeOfTsushima" target="_blank" class="neon-link">Instagram</a>
+            </div>
         </div>
+
     </div>
 
-<script>
-        const POLL_RATE = 6000;      // Check every 2 seconds
+    <script>
+        const POLL_RATE = 6000;      // Check every 6 seconds
         const DESTRUCT_TIME = 10000; // Visible for 10 seconds
 
         let myID = localStorage.getItem('my_hacker_id');
